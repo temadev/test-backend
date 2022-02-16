@@ -3,7 +3,7 @@ import http from 'http'
 import { printInfo, printServer, printWarn } from './log.service'
 import { PingData } from './types'
 
-const HOST = process.env.HOST || 'localhost';
+const HOST = process.env.SERVER_HOST || 'localhost';
 const PORT = Number(process.env.SERVER_PORT || 8080);
 
 const server = http.createServer(async (req, res) => {

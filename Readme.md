@@ -36,6 +36,7 @@ npm install
 PING_INTERVAL=1000
 PING_URL='https://fundraiseup.com/'
 SERVER_URL='http://localhost:8080/data'
+SERVER_HOST=localhost
 SERVER_PORT=8080
 SERVER_TIMEOUT=10000
 MAX_DELIVERY_ATTEMPT=10
