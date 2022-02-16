@@ -136,7 +136,7 @@ process.on('exit', () => {
   printSuccees('Успешных запросов', pingState.succeed.toString());
   printError('Запросов с 500 ошибкой', pingState.e500.toString());
   printWarn('Запросов зависло', pingState.stuck.toString());
-  if (inProcess) printInfo('Незавершенных запросов', inProcess.toString());
+  if (inProcess) printInfo('Прерванных запросов', inProcess.toString());
 });
 
 const main = () => {

@@ -1,30 +1,42 @@
-import bodyParser from 'body-parser'
-import express from 'express'
-import process from 'process'
+import http from 'http'
 
 import { printInfo, printServer, printWarn } from './log.service'
 import { PingData } from './types'
 
+const HOST = process.env.HOST || 'localhost';
 const PORT = Number(process.env.SERVER_PORT || 8080);
-const app = express();
 
-const pingData: PingData[] = [];
+const server = http.createServer(async (req, res) => {
+  switch (req.method) {
+    case 'POST':
+      switch (req.url) {
+        case '/data':
+          const buffers = [];
+          for await (const chunk of req) {
+            buffers.push(chunk);
+          }
+          const body = JSON.parse(Buffer.concat(buffers).toString());
 
-app.use(bodyParser.json());
-
-app.post('/data', (req, res) => {
-  const chance = Math.random();
-  if (chance < 0.6) {
-    res.send('OK');
-    printServer(req.body);
-    pingData.push(req.body);
-  } else if (chance < 0.8) {
-    res.status(500).send();
+          const chance = Math.random();
+          if (chance < 0.6) {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/plain');
+            res.end('OK');
+            printServer(body);
+            pingData.push(body);
+          } else if (chance < 0.8) {
+            res.statusCode = 500;
+            res.end();
+          }
+          break;
+      }
+      break;
   }
 });
 
-app.listen(PORT, () => {
-  printInfo(`Сервер запущен на порту ${PORT}`);
+const pingData: PingData[] = [];
+server.listen(PORT, HOST, () => {
+  printInfo(`Сервер запущен на ${HOST}:${PORT}`);
 });
 
 process.on('SIGINT', () => {
