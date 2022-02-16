@@ -8,7 +8,8 @@ import { PingData, PingInfo } from './types'
 const PING_START_ID = 0;
 const PING_URL = process.env.PING_URL!;
 const PING_INTERVAL = Number(process.env.PING_INTERVAL || 1000);
-const SERVER_URL = process.env.SERVER_URL!;
+const SERVER_HOST = process.env.SERVER_HOST || 'localhost';
+const SERVER_PORT = Number(process.env.SERVER_PORT || 8080);
 const SERVER_TIMEOUT = Number(process.env.SERVER_TIMEOUT || 10000);
 const MAX_DELIVERY_ATTEMPT = Number(process.env.MAX_DELIVERY_ATTEMPT || 10);
 
@@ -50,6 +51,9 @@ const sendPingData = ({
       deliveryAttempt,
     });
     const options: http.RequestOptions = {
+      path: '/data',
+      host: SERVER_HOST,
+      port: SERVER_PORT,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,7 +62,7 @@ const sendPingData = ({
       timeout: SERVER_TIMEOUT,
     };
 
-    const req = http.request(SERVER_URL, options, (res) => {
+    const req = http.request(options, (res) => {
       const body: Uint8Array[] = [];
       res.on('data', (chunk: Uint8Array) => body.push(chunk));
       res.on('end', () => {
